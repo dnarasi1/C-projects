@@ -4,16 +4,27 @@
 #include<unistd.h>
 #include<sys/types.h>
 
+#define META_SIZE sizeof(struct meta_block)
+
+typedef struct meta_block *meta_block;
+
+struct meta_block
+{
+	size_t		size;
+	meta_block	next;
+	int 		isFree;
+
+};
+
 void * mymalloc(size_t size){
-	void *ptr;
+	meta_block ptr;
 	ptr = sbrk(0);
-	if (sbrk(size)==(void*)-1){
+	if (sbrk(META_SIZE+size)==(void*)-1){
 		return NULL;
 	}
+	ptr->size = size;
 	return ptr;
 }
-
-
 
 
 int main(){
